@@ -7,6 +7,7 @@ import torch
 from torch import nn
 import d2l
 
+
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
@@ -37,5 +38,8 @@ class CNN(nn.Module):
         x = self.layer3(x)
         return x
 
+
 batch_size = 256
 train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size=batch_size)
+
+
