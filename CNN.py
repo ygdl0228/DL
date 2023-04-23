@@ -5,7 +5,10 @@
 
 import torch
 from torch import nn
-import d2l
+from torchvision import datasets, transforms
+import torchvision
+import torch.utils.data as Data
+import matplotlib.pyplot as plt
 
 
 class CNN(nn.Module):
@@ -39,7 +42,35 @@ class CNN(nn.Module):
         return x
 
 
-batch_size = 256
-train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size=batch_size)
+if __name__ == '__main__':
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device(
+        "cpu")
 
-
+    train_data = torchvision.datasets.MNIST(  # torchvision中有这一数据集，可以直接下载
+        root='./MNIST/',  # 下载后存放位置
+        train=True,  # train如果设置为True，代表是训练集
+        transform=torchvision.transforms.ToTensor(),  # 转换 PIL.Image or numpy.ndarray 成
+        # torch.FloatTensor (C x H x W), 训练的时候 [0.0,255.0] normalize 成 [0.0, 1.0] 区间
+        download=True  # 是否下载；如果已经下载好，之后就不必下载
+    )
+    test_data = torchvision.datasets.MNIST(root='./MNIST/', train=False)
+    train_loader = Data.DataLoader(
+        dataset=train_data,
+        batch_size=64,
+        shuffle=True
+    )
+    test_x = torch.unsqueeze(test_data.data, dim=1).float()[:2000] / 255.0
+    # shape from (2000, 28, 28) to (2000, 1, 28, 28), value in range(0,1)
+    test_y = test_data.targets[:2000]
+    cnn = CNN().to(device)
+    critic = torch.optim.Adam(cnn.parameters())
+    loss = torch.nn.CrossEntropyLoss()
+    loss_return = []
+    for i in range(100):
+        for x, y in train_loader:
+            l = loss(cnn(x), y)
+            critic.zero_grad()
+            l.backward()
+            critic.step()
+        loss_return.append(loss(cnn(test_x), test_y).detach().numpy())
+    plt.plot(loss_return)
