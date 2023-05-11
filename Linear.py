@@ -22,7 +22,13 @@ class net(nn.Module):
     def forward(self, x):
         x = self.layer1(x)
         return x
-
+'''
+    def __init__(self):
+        super(net, self).__init__()
+        self.x = nn.Linear(10, 2)
+        self.x.weight = nn.Parameter(torch.zeros(10, 1))
+        self.x.bias = nn.Parameter(torch.Tensor(2).fill_(2))
+'''
 
 def load_array(data_arrays, batch_size, is_train=True):  # @save
     dataset = data.TensorDataset(*data_arrays)
