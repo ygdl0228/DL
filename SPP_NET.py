@@ -24,7 +24,7 @@ class SPPLayer(torch.nn.Module):
             kernel_size = (math.ceil(h / level), math.ceil(w / level))
             stride = (math.ceil(h / level), math.ceil(w / level))
             pooling = (
-                math.floor((kernel_size[0] * level - h + 1) / 2), math.floor((kernel_size[1] * level - w + 1) / 2))
+            math.floor((kernel_size[0] * level - h + 1) / 2), math.floor((kernel_size[1] * level - w + 1) / 2))
 
             # 选择池化方式
             if self.pool_type == 'max_pool':
