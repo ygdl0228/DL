@@ -12,6 +12,7 @@ Squeeze-and-Excitation Networks
 https://arxiv.org/abs/1709.01507
 '''
 
+
 class SEAttention(nn.Module):
     def __init__(self, channel, reduction):
         super(SEAttention, self).__init__()
@@ -25,8 +26,11 @@ class SEAttention(nn.Module):
 
     def forward(self, x):
         b, c, _, _ = x.size()
+        print(self.avg_pool(x).size())
         y = self.avg_pool(x).view(b, c)
+        print(y.size())
         y = self.fc_layer(y).view(b, c, 1, 1)
+        print(y.size())
         return x * y.expand_as(x)
 
 
